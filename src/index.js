@@ -24,9 +24,11 @@ class Grid extends React.Component {
     return (
       <table style={{borderCollapse: "collapse"}}>
         <tbody>
-          {this.props.cells.map((row) => (
-            <tr className="grid_row">
-              {row.map((cell_val) => <Cell alive={cell_val} />)}
+          {this.props.cells.map((row, row_i) => (
+            <tr className="grid_row" key={`${row_i}`}>
+              {row.map((cell_val, column_i) => (
+                <Cell alive={cell_val} key={`${row_i}:${column_i}`}/>
+              ))}
             </tr>
           ))}
         </tbody>
