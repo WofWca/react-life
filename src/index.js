@@ -9,7 +9,8 @@ class Cell extends React.Component {
           backgroundColor: (this.props.alive ? "black" : "white"),
           // TODO define sizes somewhere else?
           width: "10px",
-          height: "10px"
+          height: "10px",
+          border: "solid gray 1px"
         }}
       />
     );
@@ -21,7 +22,7 @@ class Grid extends React.Component {
   The source of truth is located in `Game` component. */
   render() {
     return (
-      <table>
+      <table style={{borderCollapse: "collapse"}}>
         <tbody>
           {this.props.cells.map((row) => (
             <tr className="grid_row">
