@@ -29,7 +29,8 @@
       "quotes": [
         "warn",
         "double"
-      ]
+      ],
+      "camelcase": ["warn"]
     }
   },
   "browserslist": [
