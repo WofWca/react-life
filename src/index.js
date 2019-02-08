@@ -36,9 +36,11 @@ class Grid extends React.Component {
 }
 
 class Game extends React.Component {
+  // TODO implement using Redux?
   constructor (props) {
     super(props);
     this.state = {
+      // TODO replace with 1D?
       cells: props.cells, // A 2D array of bool.
     };
     this.generation_num = 0;
