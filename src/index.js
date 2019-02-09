@@ -122,7 +122,7 @@ class Game extends React.Component {
 
   handleSpeedChange = (event) => {
     clearInterval(this.timer);
-    this.timer = setInterval(() => this.step(), 1 / this.state.frequency * 1000);
+    this.timer = setInterval(() => this.step(), 1 / event.target.value * 1000);
     // TODO can we maybe make this slider a separate component so we don't have
     // to update the whole game every time it is changed?
     this.setState({ ...this.state, frequency: event.target.value });
