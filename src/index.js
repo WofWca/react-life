@@ -104,7 +104,6 @@ class Game extends React.Component {
     );
   }
 
-
   togglePaused = () => {
     let newPaused;
     if (this.state.paused) {
