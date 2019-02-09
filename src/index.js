@@ -57,14 +57,33 @@ class Game extends React.Component {
   // TODO implement using Redux?
   constructor (props) {
     super(props);
-    this.state = {
-      // TODO replace with 1D?
-      cells: props.cells, // A 2D array of bool.
-    };
     this.generationNum = 0;
     this.frequency = "frequency" in props ? props.frequency : 2;  // In seconds
-    this.gridHeight = props.cells.length;
-    this.gridWidth = props.cells[0].length;
+
+    // Grid generation:
+    let cells;
+    if ("cells" in props) {
+      // TODO don't ignore `props.gridDimensions`.
+      cells = props.cells;
+      this.gridHeight = cells.length;
+      this.gridWidth = cells[0].length;
+    } else {
+      if ("gridDimensions" in props) {
+        this.gridWidth = props.gridDimensions.width;
+        this.gridHeight = props.gridDimensions.height;
+      } else {
+        this.gridWidth = 30;
+        this.gridHeight = 30;
+      }
+      cells = []; cells.length = this.gridHeight;
+      for (let rowI = 0; rowI < cells.length; rowI++) {
+        let newRow = []; newRow.length = this.gridWidth;
+        newRow.fill(false);
+        cells[rowI] = newRow;
+      }
+    }
+    this.state = { cells: cells };
+
     this.nextGenCells = [];
     this.nextGenCells.length = this.gridHeight;
     for (let rowI = 0; rowI < this.nextGenCells.length; rowI++) {
