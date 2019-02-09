@@ -12,7 +12,7 @@ self.__precacheManifest = [
     "url": "/react-life/static/js/runtime~main.93d02bac.js"
   },
   {
-    "revision": "5db7a19335d9b50a924f5bb020a67e09",
+    "revision": "f7a4679347a440e458c8c1b17fd16b92",
     "url": "/react-life/index.html"
   }
 ];
