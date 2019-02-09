@@ -60,6 +60,7 @@ class Game extends React.Component {
     this.state = {
       // TODO replace with 1D?
       cells: props.cells, // A 2D array of bool.
+      paused: true
     };
     this.generationNum = 0;
     this.frequency = "frequency" in props ? props.frequency : 2;  // In seconds
@@ -76,11 +77,31 @@ class Game extends React.Component {
 
   render() {
     return (
-      <Grid
-        cells={this.state.cells}
-        onCellToggle={this.toggleCell}
-      />
+      <div>
+        <div className="controls">
+          <button onClick={this.togglePaused}>
+            {this.state.paused ? "Unpause" : "Pause"}
+          </button>
+        </div>
+        <Grid
+          cells={this.state.cells}
+          onCellToggle={this.toggleCell}
+        />
+      </div>
     );
+  }
+
+
+  togglePaused = () => {
+    let newPaused;
+    if (this.state.paused) {
+      this.timer = setInterval(() => this.step(), 1 / this.frequency * 1000);
+      newPaused = false;
+    } else {
+      clearInterval(this.timer);
+      newPaused = true;
+    }
+    this.setState({ ...this.state, paused: newPaused });
   }
 
   cellIsAlive(rowI, columnI) {
@@ -135,18 +156,14 @@ class Game extends React.Component {
     }, this);
     // Exchange the current state and the buffer for the next one.
     let coldCellsGenArr = this.state.cells;
-    this.setState({ cells: this.nextGenCells });
+    this.setState({...this.state, cells: this.nextGenCells });
     this.nextGenCells = coldCellsGenArr;
   }
 
   toggleCell = (rowI, columnI) => {
     let newCells = this.state.cells;
     newCells[rowI][columnI] = !newCells[rowI][columnI];
-    this.setState({cells: newCells});
-  }
-
-  componentDidMount() {
-    this.timer = setInterval(() => this.step(), 1 / this.frequency * 1000);
+    this.setState({...this.state, cells: newCells});
   }
 }
 
