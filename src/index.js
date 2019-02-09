@@ -5,6 +5,8 @@ class Cell extends React.Component {
   render() {
     return (
       <td className="square"
+        onMouseOver={() => this.props.onMouseOver(this.props.rowI, this.props.columnI)}
+        onMouseDown={() => this.props.onMouseDown(this.props.rowI, this.props.columnI)}
         style={{
           backgroundColor: (this.props.alive ? "black" : "white"),
           // TODO define sizes somewhere else?
@@ -27,13 +29,27 @@ class Grid extends React.Component {
           {this.props.cells.map((row, rowI) => (
             <tr className="gridRow" key={rowI.toString()}>
               {row.map((cellVal, columnI) => (
-                <Cell alive={cellVal} key={`${rowI}:${columnI}`}/>
+                <Cell
+                  rowI={rowI}
+                  columnI={columnI}
+                  alive={cellVal}
+                  key={`${rowI}:${columnI}`}
+                  onMouseOver={this.onMouseOverCell}
+                  onMouseDown={this.props.onCellToggle}
+                />
               ))}
             </tr>
           ))}
         </tbody>
       </table>
     );
+  }
+
+  onMouseOverCell = (rowI, columnI) => {
+    this.mouseOverCell = { rowI, columnI };
+    if (mouseDown) {
+      this.props.onCellToggle(rowI, columnI);
+    }
   }
 }
 
@@ -116,14 +132,31 @@ class Game extends React.Component {
 
   render() {
     return (
-      <Grid cells={this.state.cells}/>
+      <Grid
+        cells={this.state.cells}
+        onCellToggle={this.toggleCell}
+      />
     );
+  }
+
+  toggleCell = (rowI, columnI) => {
+    let newCells = this.state.cells;
+    newCells[rowI][columnI] = !newCells[rowI][columnI];
+    this.setState({cells: newCells});
   }
 
   componentDidMount() {
     this.timer = setInterval(() => this.step(), 1 / this.frequency * 1000);
   }
 }
+
+var mouseDown = false;
+document.onmousedown = function() {
+  mouseDown = true;
+};
+document.onmouseup = function () {
+  mouseDown = false;
+};
 
 let cells = [
   [false, true, false, false, false, true, false],
