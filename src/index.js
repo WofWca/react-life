@@ -33,10 +33,6 @@ class Cell extends React.Component {
 class Grid extends React.Component {
   /* This is just a grid representation component.
   The source of truth is located in `Game` component. */
-  constructor (props) {
-    super(props);
-    this.mouseOverCell = { rowI: undefined, columnI: undefined };
-  }
   render() {
     return (
       <table style={{borderCollapse: "collapse"}}>
@@ -61,8 +57,6 @@ class Grid extends React.Component {
   }
 
   onMouseOverCell = (rowI, columnI) => {
-    this.mouseOverCell.rowI = rowI;
-    this.mouseOverCell.columnI = columnI;
     if (mouseDown) {
       this.props.onCellToggle(rowI, columnI);
     }
