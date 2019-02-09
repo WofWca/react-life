@@ -74,6 +74,15 @@ class Game extends React.Component {
     }
   }
 
+  render() {
+    return (
+      <Grid
+        cells={this.state.cells}
+        onCellToggle={this.toggleCell}
+      />
+    );
+  }
+
   cellIsAlive(rowI, columnI) {
     if (rowI < 0 || rowI >= this.gridHeight ||
       columnI < 0 || columnI >= this.gridWidth) {
@@ -128,15 +137,6 @@ class Game extends React.Component {
     let coldCellsGenArr = this.state.cells;
     this.setState({ cells: this.nextGenCells });
     this.nextGenCells = coldCellsGenArr;
-  }
-
-  render() {
-    return (
-      <Grid
-        cells={this.state.cells}
-        onCellToggle={this.toggleCell}
-      />
-    );
   }
 
   toggleCell = (rowI, columnI) => {
