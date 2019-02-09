@@ -173,9 +173,9 @@ class Game extends React.Component {
       }, this);
     }, this);
     // Exchange the current state and the buffer for the next one.
-    let coldCellsGenArr = this.state.cells;
+    let oldCellsGenArr = this.state.cells;
     this.setState({...this.state, cells: this.nextGenCells });
-    this.nextGenCells = coldCellsGenArr;
+    this.nextGenCells = oldCellsGenArr;
   }
 
   toggleCell = (rowI, columnI) => {
