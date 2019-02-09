@@ -1,6 +1,17 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
+function create2DArrayOf(height, width, val) {
+  let newArr = [];
+  newArr.length = height;
+  for (let rowI = 0; rowI < height; rowI++) {
+    let newRow = []; newRow.length = width;
+    newRow.fill(val, 0, newRow.length);
+    newArr[rowI] = newRow;
+  }
+  return newArr;
+}
+
 class Cell extends React.Component {
   render() {
     return (
@@ -57,21 +68,18 @@ class Game extends React.Component {
   // TODO implement using Redux?
   constructor (props) {
     super(props);
+    // Grid generation
+    this.gridHeight = "gridDimensions" in props ? props.gridDimensions.height : 20;
+    this.gridWidth = "gridDimensions" in props ? props.gridDimensions.width : 20;
+    let cells = create2DArrayOf(this.gridHeight, this.gridWidth, false);
     this.state = {
       // TODO replace with 1D?
-      cells: props.cells, // A 2D array of bool.
+      cells: cells, // A 2D array of bool.
     };
+
     this.generationNum = 0;
     this.frequency = "frequency" in props ? props.frequency : 2;  // In seconds
-    this.gridHeight = props.cells.length;
-    this.gridWidth = props.cells[0].length;
-    this.nextGenCells = [];
-    this.nextGenCells.length = this.gridHeight;
-    for (let rowI = 0; rowI < this.nextGenCells.length; rowI++) {
-      let newRow = []; newRow.length = this.gridWidth;
-      newRow.fill(false, 0, newRow.length);
-      this.nextGenCells[rowI] = newRow;
-    }
+    this.nextGenCells = create2DArrayOf(this.gridHeight, this.gridWidth, false);
   }
 
   render() {
@@ -158,15 +166,7 @@ document.onmouseup = function () {
   mouseDown = false;
 };
 
-let cells = [
-  [false, true, false, false, false, true, false],
-  [false, false, true, false, false, true, false],
-  [true, true, true, false, false, true, false],
-  [false, false, false, false, false, false, false],
-  [false, false, false, false, false, false, false],
-  [false, false, false, false, false, false, false],
-];
 ReactDOM.render(
-  <Game cells={cells}/>,
+  <Game gridDimensions={{ height: 30, width: 30 }} />,
   document.getElementById("root")
 );
