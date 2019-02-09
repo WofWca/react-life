@@ -80,11 +80,11 @@ class Game extends React.Component {
     this.state = {
       // TODO replace with 1D?
       cells: cells, // A 2D array of bool.
+      frequency: "frequency" in props ? props.frequency : 4,  // In seconds
       paused: true
     };
 
     this.generationNum = 0;
-    this.frequency = "frequency" in props ? props.frequency : 2;  // In seconds
     this.nextGenCells = create2DArrayOf(this.gridHeight, this.gridWidth, false);
   }
 
@@ -95,6 +95,10 @@ class Game extends React.Component {
           <button onClick={this.togglePaused}>
             {this.state.paused ? "Unpause" : "Pause"}
           </button>
+          <input type="range" min="0.5" max="20"
+            value={this.state.frequency}
+            onChange={this.handleSpeedChange}
+          />
         </div>
         <Grid
           cells={this.state.cells}
@@ -107,13 +111,21 @@ class Game extends React.Component {
   togglePaused = () => {
     let newPaused;
     if (this.state.paused) {
-      this.timer = setInterval(() => this.step(), 1 / this.frequency * 1000);
+      this.timer = setInterval(() => this.step(), 1 / this.state.frequency * 1000);
       newPaused = false;
     } else {
       clearInterval(this.timer);
       newPaused = true;
     }
     this.setState({ ...this.state, paused: newPaused });
+  }
+
+  handleSpeedChange = (event) => {
+    clearInterval(this.timer);
+    this.timer = setInterval(() => this.step(), 1 / this.state.frequency * 1000);
+    // TODO can we maybe make this slider a separate component so we don't have
+    // to update the whole game every time it is changed?
+    this.setState({ ...this.state, frequency: event.target.value });
   }
 
   cellIsAlive(rowI, columnI) {
