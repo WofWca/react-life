@@ -12,7 +12,7 @@ function create2DArrayOf(height, width, val) {
   return newArr;
 }
 
-class Cell extends React.Component {
+class Cell extends React.PureComponent {
   render() {
     return (
       <td className="square"
