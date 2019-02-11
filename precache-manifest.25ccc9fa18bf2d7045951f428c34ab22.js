@@ -1,7 +1,7 @@
 self.__precacheManifest = [
   {
-    "revision": "f2364a04d800186e103e",
-    "url": "/react-life/static/js/main.f2364a04.chunk.js"
+    "revision": "44ef515d3bec108fe915",
+    "url": "/react-life/static/js/main.44ef515d.chunk.js"
   },
   {
     "revision": "998c1f1de09a2386881b",
@@ -12,7 +12,7 @@ self.__precacheManifest = [
     "url": "/react-life/static/js/runtime~main.93d02bac.js"
   },
   {
-    "revision": "f7a4679347a440e458c8c1b17fd16b92",
+    "revision": "50c8117cfd08534cf4f4fb03a5c728d6",
     "url": "/react-life/index.html"
   }
 ];
