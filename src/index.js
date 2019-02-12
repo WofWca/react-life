@@ -12,16 +12,6 @@ function create2DArrayOf(height, width, val) {
   return newArr;
 }
 
-function copy2DArray(toArr, fromArr) {
-  // Arrays must have the same size.
-  const height = fromArr.length, width = fromArr[0].length;
-  for (let rowI = 0; rowI < height; rowI++) {
-    for (let columnI = 0; columnI < width; columnI++) {
-      toArr[rowI][columnI] = fromArr[rowI][columnI];
-    }
-  }
-}
-
 class Cell extends React.PureComponent {
   render() {
     return (
@@ -89,7 +79,7 @@ class Game extends React.Component {
     };
 
     this.generationNum = 0;
-    this.nextStateCells = create2DArrayOf(this.gridHeight, this.gridWidth, false);
+    this._nextStateCells = create2DArrayOf(this.gridHeight, this.gridWidth, false);
   }
 
   render() {
@@ -158,44 +148,56 @@ class Game extends React.Component {
     return numNeighbors;
   }
 
+  updateCells(updater) {
+    /* If an update needs to be done to cells, this function must be called.
+    `updater` must be a function like:
+    `(currStateCells, nextStateCells) => { ... }`, which defines the way the
+    cells must be updated. currStateCells must not be modified.
+    `nextStateCells` will be assigned to the current state upon execution. */
+    this.setState((state, props) => {
+      // Copy the current state.
+      const height = state.cells.length, width = state.cells[0].length;
+      for (let rowI = 0; rowI < height; rowI++) {
+        for (let columnI = 0; columnI < width; columnI++) {
+          this._nextStateCells[rowI][columnI] = state.cells[rowI][columnI];
+        }
+      }
+      updater(state.cells, this._nextStateCells);
+
+      // The array pointed to by `this._nextStateCells` becomes a new state
+      // The array pointed to by `state.cells` is new considered to
+      // contain waste and is assigned to this._nextStateCells for further
+      // rewriting to avoid memory reallocation.
+      const newCells = this._nextStateCells;
+      this._nextStateCells = state.cells;
+      return { cells: newCells };
+    });
+  }
+
   step () {
     // TODO calculate the next step before the time has passed
     // TODO only calcualte cells whose neighbours have changed.
-    this.setState((state, props) => {
-      copy2DArray(this.nextStateCells, state.cells);
-      // TODO these forEach(..., this) are ugly.
-      state.cells.forEach((row, rowI) => {
+    this.updateCells((currStateCells, nextStateCells) => {
+      currStateCells.forEach((row, rowI) => {
         row.forEach((currCellAlive, columnI) => {
           // Now, the actual game logic
-          let numNeighbors = this.cellGetNumNeighbors(state.cells, rowI, columnI);
+          let numNeighbors = this.cellGetNumNeighbors(currStateCells, rowI, columnI);
           if (
             numNeighbors === 3 ||
             (numNeighbors === 2 && currCellAlive)
           ) {
-            this.nextStateCells[rowI][columnI] = true;
+            nextStateCells[rowI][columnI] = true;
           } else {
-            this.nextStateCells[rowI][columnI] = false;
+            nextStateCells[rowI][columnI] = false;
           }
-        }, this);
-      }, this);
-
-      // The array pointed to by `this.nextStateCells` becomes a new state
-      // The array pointed to by `state.cells` is new considered to
-      // contain waste and is assigned to this.nextStateCells for further
-      // rewriting to avoid memory reallocation.
-      const newCells = this.nextStateCells;
-      this.nextStateCells = state.cells;
-      return {cells: newCells};
+        });
+      });
     });
   }
 
   toggleCell = (rowI, columnI) => {
-    this.setState((state, props) => {
-      copy2DArray(this.nextStateCells, state.cells);
-      this.nextStateCells[rowI][columnI] = !state.cells[rowI][columnI];
-      const newCells = this.nextStateCells;
-      this.nextStateCells = state.cells;
-      return { cells: newCells };
+    this.updateCells((currStateCells, nextStateCells) => {
+      nextStateCells[rowI][columnI] = !currStateCells[rowI][columnI];
     });
   }
 }
