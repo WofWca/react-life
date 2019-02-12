@@ -119,8 +119,6 @@ class Game extends React.Component {
   handleSpeedChange = (event) => {
     clearInterval(this.timer);
     this.timer = setInterval(() => this.step(), 1 / event.target.value * 1000);
-    // TODO can we maybe make this slider a separate component so we don't have
-    // to update the whole game every time it is changed?
     this.setState({ frequency: event.target.value });
   }
 
@@ -175,7 +173,8 @@ class Game extends React.Component {
   }
 
   step () {
-    // TODO calculate the next step before the time has passed
+    /* TODO calculate the next step before the time has passed?
+    Recalculate if the user drew something.*/
     // TODO only calcualte cells whose neighbours have changed.
     this.updateCells((currStateCells, nextStateCells) => {
       currStateCells.forEach((row, rowI) => {
