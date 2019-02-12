@@ -117,9 +117,12 @@ class Game extends React.Component {
   }
 
   handleSpeedChange = (event) => {
-    clearInterval(this.timer);
-    this.timer = setInterval(() => this.step(), 1 / event.target.value * 1000);
-    this.setState({ frequency: event.target.value });
+    const newFrequency = event.target.value;
+    if (!this.state.paused) {
+      clearInterval(this.timer);
+      this.timer = setInterval(() => this.step(), 1 / newFrequency * 1000);
+    }
+    this.setState({ frequency: newFrequency });
   }
 
   cellIsAlive(cellsArray, rowI, columnI) {
