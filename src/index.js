@@ -83,12 +83,16 @@ class Game extends React.Component {
   }
 
   render() {
+    let pauseUnpauseButton;
+    if (this.state.paused) {
+      pauseUnpauseButton = <button onClick={this.unpause}>Unpause</button>;
+    } else {
+      pauseUnpauseButton = <button onClick={this.pause}>Pause</button>;
+    }
     return (
       <div>
         <div className="controls">
-          <button onClick={this.togglePaused}>
-            {this.state.paused ? "Unpause" : "Pause"}
-          </button>
+          {pauseUnpauseButton}
           <input type="range" min="0.5" max="20"
             value={this.state.frequency}
             onChange={this.handleSpeedChange}
@@ -102,16 +106,14 @@ class Game extends React.Component {
     );
   }
 
-  togglePaused = () => {
-    let newPaused;
-    if (this.state.paused) {
-      this.timer = setInterval(() => this.step(), 1 / this.state.frequency * 1000);
-      newPaused = false;
-    } else {
-      clearInterval(this.timer);
-      newPaused = true;
-    }
-    this.setState({ ...this.state, paused: newPaused });
+  pause = () => {
+    clearInterval(this.timer);
+    this.setState({ paused: true });
+  }
+
+  unpause = () => {
+    this.timer = setInterval(() => this.step(), 1 / this.state.frequency * 1000);
+    this.setState({ paused: false });
   }
 
   handleSpeedChange = (event) => {
