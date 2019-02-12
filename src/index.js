@@ -149,33 +149,38 @@ class Game extends React.Component {
   step () {
     // TODO calculate the next step before the time has passed
     // TODO only calcualte cells whose neighbours have changed.
+    this.setState((state, props) => {
+      // Copy the from the old state.
+      // You can't just `this.nextGenCells = state.cells.slice()`, as this is
+      // a shallow copy.
+      for (let rowI = 0; rowI < this.nextGenCells.length; rowI++) {
+        this.nextGenCells[rowI] = state.cells[rowI].slice();
+      }
 
-    // Copy the from the old state.
-    // You can't just `this.nextGenCells = this.state.cells.slice()`, as this is
-    // a shallow copy.
-    for (let rowI = 0; rowI < this.nextGenCells.length; rowI++) {
-      this.nextGenCells[rowI] = this.state.cells[rowI].slice();
-    }
-
-    // TODO these forEach(..., this) are ugly.
-    this.state.cells.forEach((row, rowI) => {
-      row.forEach((currCellAlive, columnI) => {
-        // Now, the actual game logic
-        let numNeighbors = this.cellGetNumNeighbors(this.state.cells, rowI, columnI);
-        if (
-          numNeighbors === 3 ||
-          (numNeighbors === 2 && currCellAlive)
-        ) {
-          this.nextGenCells[rowI][columnI] = true;
-        } else {
-          this.nextGenCells[rowI][columnI] = false;
-        }
+      // TODO these forEach(..., this) are ugly.
+      state.cells.forEach((row, rowI) => {
+        row.forEach((currCellAlive, columnI) => {
+          // Now, the actual game logic
+          let numNeighbors = this.cellGetNumNeighbors(state.cells, rowI, columnI);
+          if (
+            numNeighbors === 3 ||
+            (numNeighbors === 2 && currCellAlive)
+          ) {
+            this.nextGenCells[rowI][columnI] = true;
+          } else {
+            this.nextGenCells[rowI][columnI] = false;
+          }
+        }, this);
       }, this);
-    }, this);
-    // Exchange the current state and the buffer for the next one.
-    let oldCellsGenArr = this.state.cells;
-    this.setState({...this.state, cells: this.nextGenCells });
-    this.nextGenCells = oldCellsGenArr;
+
+      // The array pointed to by `this.nextGenCells` becomes a new state
+      // The array pointed to by `state.cells` is new considered to
+      // contain waste and is assigned to this.nextGenCells for further
+      // rewriting to avoid memory reallocation.
+      const newCells = this.nextGenCells;
+      this.nextGenCells = state.cells;
+      return {cells: newCells};
+    });
   }
 
   toggleCell = (rowI, columnI) => {
