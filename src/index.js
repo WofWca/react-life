@@ -122,27 +122,27 @@ class Game extends React.Component {
     this.setState({ ...this.state, frequency: event.target.value });
   }
 
-  cellIsAlive(rowI, columnI) {
+  cellIsAlive(cellsArray, rowI, columnI) {
     if (rowI < 0 || rowI >= this.gridHeight ||
       columnI < 0 || columnI >= this.gridWidth) {
       return false;
     }
-    if (this.state.cells[rowI][columnI] === false) {
+    if (cellsArray[rowI][columnI] === false) {
       return false;
     }
     return true;
   }
 
-  cellGetNumNeighbors (rowI, columnI) { 
+  cellGetNumNeighbors(cellsArray, rowI, columnI) { 
     let numNeighbors = 0;
-    if (this.cellIsAlive(rowI - 1, columnI - 1)) numNeighbors++;
-    if (this.cellIsAlive(rowI - 1, columnI)) numNeighbors++;
-    if (this.cellIsAlive(rowI - 1, columnI + 1)) numNeighbors++;
-    if (this.cellIsAlive(rowI, columnI - 1)) numNeighbors++;
-    if (this.cellIsAlive(rowI, columnI + 1)) numNeighbors++;
-    if (this.cellIsAlive(rowI + 1, columnI - 1)) numNeighbors++;
-    if (this.cellIsAlive(rowI + 1, columnI)) numNeighbors++;
-    if (this.cellIsAlive(rowI + 1, columnI + 1)) numNeighbors++;
+    if (this.cellIsAlive(cellsArray, rowI - 1, columnI - 1)) numNeighbors++;
+    if (this.cellIsAlive(cellsArray, rowI - 1, columnI)) numNeighbors++;
+    if (this.cellIsAlive(cellsArray, rowI - 1, columnI + 1)) numNeighbors++;
+    if (this.cellIsAlive(cellsArray, rowI, columnI - 1)) numNeighbors++;
+    if (this.cellIsAlive(cellsArray, rowI, columnI + 1)) numNeighbors++;
+    if (this.cellIsAlive(cellsArray, rowI + 1, columnI - 1)) numNeighbors++;
+    if (this.cellIsAlive(cellsArray, rowI + 1, columnI)) numNeighbors++;
+    if (this.cellIsAlive(cellsArray, rowI + 1, columnI + 1)) numNeighbors++;
     return numNeighbors;
   }
 
@@ -161,7 +161,7 @@ class Game extends React.Component {
     this.state.cells.forEach((row, rowI) => {
       row.forEach((currCellAlive, columnI) => {
         // Now, the actual game logic
-        let numNeighbors = this.cellGetNumNeighbors(rowI, columnI);
+        let numNeighbors = this.cellGetNumNeighbors(this.state.cells, rowI, columnI);
         if (
           numNeighbors === 3 ||
           (numNeighbors === 2 && currCellAlive)
