@@ -12,6 +12,16 @@ function create2DArrayOf(height, width, val) {
   return newArr;
 }
 
+function copy2DArray(toArr, fromArr) {
+  // Arrays must have the same size.
+  const height = fromArr.length, width = fromArr[0].length;
+  for (let rowI = 0; rowI < height; rowI++) {
+    for (let columnI = 0; columnI < width; columnI++) {
+      toArr[rowI][columnI] = fromArr[rowI][columnI];
+    }
+  }
+}
+
 class Cell extends React.PureComponent {
   render() {
     return (
@@ -79,7 +89,7 @@ class Game extends React.Component {
     };
 
     this.generationNum = 0;
-    this.nextGenCells = create2DArrayOf(this.gridHeight, this.gridWidth, false);
+    this.nextStateCells = create2DArrayOf(this.gridHeight, this.gridWidth, false);
   }
 
   render() {
@@ -121,7 +131,7 @@ class Game extends React.Component {
     this.timer = setInterval(() => this.step(), 1 / event.target.value * 1000);
     // TODO can we maybe make this slider a separate component so we don't have
     // to update the whole game every time it is changed?
-    this.setState({ ...this.state, frequency: event.target.value });
+    this.setState({ frequency: event.target.value });
   }
 
   cellIsAlive(cellsArray, rowI, columnI) {
@@ -152,13 +162,7 @@ class Game extends React.Component {
     // TODO calculate the next step before the time has passed
     // TODO only calcualte cells whose neighbours have changed.
     this.setState((state, props) => {
-      // Copy the from the old state.
-      // You can't just `this.nextGenCells = state.cells.slice()`, as this is
-      // a shallow copy.
-      for (let rowI = 0; rowI < this.nextGenCells.length; rowI++) {
-        this.nextGenCells[rowI] = state.cells[rowI].slice();
-      }
-
+      copy2DArray(this.nextStateCells, state.cells);
       // TODO these forEach(..., this) are ugly.
       state.cells.forEach((row, rowI) => {
         row.forEach((currCellAlive, columnI) => {
@@ -168,27 +172,31 @@ class Game extends React.Component {
             numNeighbors === 3 ||
             (numNeighbors === 2 && currCellAlive)
           ) {
-            this.nextGenCells[rowI][columnI] = true;
+            this.nextStateCells[rowI][columnI] = true;
           } else {
-            this.nextGenCells[rowI][columnI] = false;
+            this.nextStateCells[rowI][columnI] = false;
           }
         }, this);
       }, this);
 
-      // The array pointed to by `this.nextGenCells` becomes a new state
+      // The array pointed to by `this.nextStateCells` becomes a new state
       // The array pointed to by `state.cells` is new considered to
-      // contain waste and is assigned to this.nextGenCells for further
+      // contain waste and is assigned to this.nextStateCells for further
       // rewriting to avoid memory reallocation.
-      const newCells = this.nextGenCells;
-      this.nextGenCells = state.cells;
+      const newCells = this.nextStateCells;
+      this.nextStateCells = state.cells;
       return {cells: newCells};
     });
   }
 
   toggleCell = (rowI, columnI) => {
-    let newCells = this.state.cells;
-    newCells[rowI][columnI] = !newCells[rowI][columnI];
-    this.setState({...this.state, cells: newCells});
+    this.setState((state, props) => {
+      copy2DArray(this.nextStateCells, state.cells);
+      this.nextStateCells[rowI][columnI] = !state.cells[rowI][columnI];
+      const newCells = this.nextStateCells;
+      this.nextStateCells = state.cells;
+      return { cells: newCells };
+    });
   }
 }
 
