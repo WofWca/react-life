@@ -126,8 +126,10 @@ class Game extends React.Component {
   }
 
   cellIsAlive(cellsArray, rowI, columnI) {
-    if (rowI < 0 || rowI >= this.gridHeight ||
-      columnI < 0 || columnI >= this.gridWidth) {
+    const height = cellsArray.length;
+    const width = cellsArray[0].length;
+    if (rowI < 0 || rowI >= height ||
+      columnI < 0 || columnI >= width) {
       return false;
     }
     if (cellsArray[rowI][columnI] === false) {
