@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import "./index.css";
 
 function create2DArrayOf(height, width, val) {
   let newArr = [];
@@ -15,16 +16,9 @@ function create2DArrayOf(height, width, val) {
 class Cell extends React.PureComponent {
   render() {
     return (
-      <td className="square"
+      <td className={"cell " + (this.props.alive ? "alive" : "dead")}
         onMouseOver={() => this.props.onMouseOver(this.props.rowI, this.props.columnI)}
         onMouseDown={() => this.props.onMouseDown(this.props.rowI, this.props.columnI)}
-        style={{
-          backgroundColor: (this.props.alive ? "black" : "white"),
-          // TODO define sizes somewhere else?
-          width: "10px",
-          height: "10px",
-          border: "solid gray 1px"
-        }}
       />
     );
   }
@@ -35,10 +29,10 @@ class Grid extends React.Component {
   The source of truth is located in `Game` component. */
   render() {
     return (
-      <table style={{borderCollapse: "collapse"}}>
+      <table className="grid">
         <tbody>
           {this.props.cells.map((row, rowI) => (
-            <tr className="gridRow" key={rowI.toString()}>
+            <tr key={rowI.toString()}>
               {row.map((cellVal, columnI) => (
                 <Cell
                   rowI={rowI}

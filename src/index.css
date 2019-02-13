@@ -1,0 +1,15 @@
+.cell {
+  width: 10px;
+  height: 10px;
+  border: solid gray 1px;
+}
+.cell.alive {
+  background-color: black;
+}
+.cell.dead {
+  background-color: white;
+}
+
+table.grid {
+   border-collapse: collapse;
+}
