@@ -92,7 +92,7 @@ class Game extends React.Component {
       <div>
         <div className="control-panel">
           {pauseUnpauseButton}
-          <input type="range" min="0.5" max="20"
+          <input type="range" min="0.5" max="60"
             value={this.state.frequency}
             onChange={this.handleSpeedChange}
           />
