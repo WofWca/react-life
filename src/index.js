@@ -68,17 +68,16 @@ class Game extends React.Component {
   constructor (props) {
     super(props);
     // Grid generation
-    this.gridHeight = "gridDimensions" in props ? props.gridDimensions.height : 20;
-    this.gridWidth = "gridDimensions" in props ? props.gridDimensions.width : 20;
+    this.gridHeight = 35;
+    this.gridWidth = 35;
     let cells = create2DArrayOf(this.gridHeight, this.gridWidth, false);
     this.state = {
       // TODO replace with 1D?
       cells: cells, // A 2D array of bool.
       frequency: "frequency" in props ? props.frequency : 4,  // In seconds
-      paused: true
+      paused: true,
+      generationNum: 0
     };
-
-    this.generationNum = 0;
     this._nextStateCells = create2DArrayOf(this.gridHeight, this.gridWidth, false);
   }
 
@@ -91,12 +90,13 @@ class Game extends React.Component {
     }
     return (
       <div>
-        <div className="controls">
+        <div className="control-panel">
           {pauseUnpauseButton}
           <input type="range" min="0.5" max="20"
             value={this.state.frequency}
             onChange={this.handleSpeedChange}
           />
+          <span>{this.state.generationNum}</span>
         </div>
         <Grid
           cells={this.state.cells}
@@ -195,6 +195,7 @@ class Game extends React.Component {
         });
       });
     });
+    this.setState((state, props) => ({generationNum: state.generationNum + 1}));
   }
 
   toggleCell = (rowI, columnI) => {
@@ -213,6 +214,6 @@ document.onmouseup = function () {
 };
 
 ReactDOM.render(
-  <Game gridDimensions={{ height: 30, width: 30 }} />,
+  <Game />,
   document.getElementById("root")
 );
