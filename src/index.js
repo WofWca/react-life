@@ -68,8 +68,8 @@ class Game extends React.Component {
   constructor (props) {
     super(props);
     // Grid generation
-    this.gridHeight = 40;
-    this.gridWidth = 35;
+    this.gridHeight = 41;
+    this.gridWidth = 37;
     let cells = create2DArrayOf(this.gridHeight, this.gridWidth, false);
     this.state = {
       // TODO replace with 1D?
