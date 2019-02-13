@@ -68,7 +68,7 @@ class Game extends React.Component {
   constructor (props) {
     super(props);
     // Grid generation
-    this.gridHeight = 35;
+    this.gridHeight = 40;
     this.gridWidth = 35;
     let cells = create2DArrayOf(this.gridHeight, this.gridWidth, false);
     this.state = {
