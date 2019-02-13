@@ -138,16 +138,37 @@ class Game extends React.Component {
     return true;
   }
 
-  cellGetNumNeighbors(cellsArray, rowI, columnI) { 
+  cellIsAliveToroidal(cellsArray, rowI, columnI) {
+    const height = cellsArray.length;
+    const width = cellsArray[0].length;
+    let translatedRowI, translatedColumnI;
+    if (rowI === -1) {
+      translatedRowI = height - 1;
+    } else if (rowI === height) {
+      translatedRowI = 0;
+    } else {
+      translatedRowI = rowI;
+    }
+    if (columnI === -1) {
+      translatedColumnI = width - 1;
+    } else if (columnI === width) {
+      translatedColumnI = 0;
+    } else {
+      translatedColumnI = columnI;
+    }
+    return cellsArray[translatedRowI][translatedColumnI];
+  }
+
+  cellGetNumNeighbors(cellsArray, rowI, columnI, cellIsAliveFunction) { 
     let numNeighbors = 0;
-    if (this.cellIsAlive(cellsArray, rowI - 1, columnI - 1)) numNeighbors++;
-    if (this.cellIsAlive(cellsArray, rowI - 1, columnI)) numNeighbors++;
-    if (this.cellIsAlive(cellsArray, rowI - 1, columnI + 1)) numNeighbors++;
-    if (this.cellIsAlive(cellsArray, rowI, columnI - 1)) numNeighbors++;
-    if (this.cellIsAlive(cellsArray, rowI, columnI + 1)) numNeighbors++;
-    if (this.cellIsAlive(cellsArray, rowI + 1, columnI - 1)) numNeighbors++;
-    if (this.cellIsAlive(cellsArray, rowI + 1, columnI)) numNeighbors++;
-    if (this.cellIsAlive(cellsArray, rowI + 1, columnI + 1)) numNeighbors++;
+    if (cellIsAliveFunction(cellsArray, rowI - 1, columnI - 1)) numNeighbors++;
+    if (cellIsAliveFunction(cellsArray, rowI - 1, columnI)) numNeighbors++;
+    if (cellIsAliveFunction(cellsArray, rowI - 1, columnI + 1)) numNeighbors++;
+    if (cellIsAliveFunction(cellsArray, rowI, columnI - 1)) numNeighbors++;
+    if (cellIsAliveFunction(cellsArray, rowI, columnI + 1)) numNeighbors++;
+    if (cellIsAliveFunction(cellsArray, rowI + 1, columnI - 1)) numNeighbors++;
+    if (cellIsAliveFunction(cellsArray, rowI + 1, columnI)) numNeighbors++;
+    if (cellIsAliveFunction(cellsArray, rowI + 1, columnI + 1)) numNeighbors++;
     return numNeighbors;
   }
 
@@ -185,7 +206,11 @@ class Game extends React.Component {
       currStateCells.forEach((row, rowI) => {
         row.forEach((currCellAlive, columnI) => {
           // Now, the actual game logic
-          let numNeighbors = this.cellGetNumNeighbors(currStateCells, rowI, columnI);
+          let numNeighbors = this.cellGetNumNeighbors(
+            currStateCells,
+            rowI,
+            columnI,
+            this.cellIsAliveToroidal);
           if (
             numNeighbors === 3 ||
             (numNeighbors === 2 && currCellAlive)
