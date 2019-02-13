@@ -68,8 +68,8 @@ class Game extends React.Component {
   constructor (props) {
     super(props);
     // Grid generation
-    this.gridHeight = "gridDimensions" in props ? props.gridDimensions.height : 20;
-    this.gridWidth = "gridDimensions" in props ? props.gridDimensions.width : 20;
+    this.gridHeight = 30;
+    this.gridWidth = 30;
     let cells = create2DArrayOf(this.gridHeight, this.gridWidth, false);
     this.state = {
       // TODO replace with 1D?
@@ -213,6 +213,6 @@ document.onmouseup = function () {
 };
 
 ReactDOM.render(
-  <Game gridDimensions={{ height: 30, width: 30 }} />,
+  <Game />,
   document.getElementById("root")
 );
